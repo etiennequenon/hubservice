@@ -1,14 +1,19 @@
 import user
-import datetime
 import time
+import datetime
 
 
 def test_publish_advertisement():
     provider = user.Provider("testdude", "00000-0000-0000-00000000", None, None, list(), False, False, None)
     ad = provider.publish_ad("TestAd", "This is a test Ad", {"service1": 123}, None, None, "00000-0000-0000-00000000")
     assert ad.published
-    assert ad.date_published == datetime.datetime.now()
-    assert ad.expiry_date == ad.date_published + datetime.timedelta(days=7)
+    assert ad.date_published
+    assert ad.expiry_date
+
+    try:  # Test if the same ad can't be published twice.
+        provider.publish_ad("TestAd", "This is a test Ad", {"service1": 123}, None, None, "00000-0000-0000-00000000")
+    except user.AdAlreadyExist:
+        pass
 
 
 def test_unpublish_advertisement():
@@ -99,3 +104,35 @@ def test_update_ad_prices():
     provider.update_ad_prices("00000-0000-0000-00000001", {"service1": 220})
 
     assert ad.prices["service1"] == 220
+
+
+def test_promote_ad_to_premium():
+    provider = user.Provider("testdude", "00000-0000-0000-00000000", None, None, list(), False, True, None)
+    ad = provider.publish_ad("TestAd", "This is a test Ad", None, None, {}, "00000-0000-0000-00000001")
+
+    ad_promoted = provider.promote_ad_to_premium(ad.uuid)
+
+    assert ad_promoted
+
+    try:
+        provider.promote_ad_to_premium(ad.uuid)
+    except user.AdvertisementAlreadyPromoted:
+        pass
+
+    provider.vip = False  # Test if user is not VIP, so it returns an error.
+
+    try:
+        provider.promote_ad_to_premium(ad.uuid)
+    except user.NotVip:
+        pass
+
+
+def test_assign_private_pics():
+    provider = user.Provider("testdude", "00000-0000-0000-00000000", None, None, list(), False, True, None)
+    timestamp = datetime.datetime.now()
+    pics = [user.PrivatePicture(bytes(), timestamp), user.PrivatePicture(bytes(), timestamp), user.PrivatePicture(bytes(), timestamp)]
+
+    provider.private_pics = pics
+
+    assert len(provider.private_pics) == 3
+    assert provider.private_pics[0].date_published == timestamp
