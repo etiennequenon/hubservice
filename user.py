@@ -3,12 +3,25 @@ from dataclasses import dataclass
 from typing import Set, List
 
 
+@dataclass(frozen=False)
+class Report:
+    target_uuid: str
+    owner_uuid: str
+    timestamp: datetime.datetime
+    content: str
+    status: str
+    uuid: str
+
+
 class User:
     def __init__(self, username: str, uuid: str, password: str, e_mail: str):
         self.username = username
         self.uuid = uuid
         self.password = password
         self.e_mail = e_mail
+
+    def report(self, target_uuid: str, content: str, uuid: str) -> Report: # To report a profile, an Ad, Provider, etc...
+        return Report(target_uuid, self.uuid, datetime.datetime.now(), content, 'NEW', uuid)
 
 
 @dataclass(frozen=True)
@@ -51,6 +64,10 @@ class AlreadyPublished(Exception):
 
 class AdvertisementAlreadyPromoted(Exception):
     """ This Ad is already promoted ! """
+
+
+class SmsLimitWasReached(Exception):
+    """ You reached the daily 50 SMS limit ! """
 
 
 @dataclass(unsafe_hash=True)
@@ -157,19 +174,42 @@ class Provider(User):
         self._private_pics = pictures
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class Comment:
-    provider_uuid: str
-    visitor_uuid: str
+    target_uuid: str
+    owner_uuid: str
     timestamp: datetime.datetime
+    modif_timestamp: datetime.datetime
     content: str
+    uuid: str
+
 
 
 class Visitor(User):
-    def __init__(self, username: str, uuid: str, password: str, e_mail: str):
-        self.birthday: datetime.date
-        self.address: str
-        self.profile_pic: bytes
-        self.preferences: dict
-        self.is_premium: bool
+    def __init__(self, username: str, uuid: str, password: str, e_mail: str, birthday: datetime.date, address: str, profile_pic: bytes, preferences: dict, is_premium: bool):
+        self.birthday = birthday
+        self.address = address
+        self.profile_pic = profile_pic
+        self.preferences = preferences
+        self.is_premium = is_premium
+        self._sms_sent = 0
         super().__init__(username, uuid, password, e_mail)
+
+    def send_sms(self):
+        if self._sms_sent < 50:
+            self._sms_sent += 1
+        else:
+            raise SmsLimitWasReached
+
+    @property
+    def sms_sent(self) -> int:
+        return self._sms_sent
+
+    def add_comment(self, target_uuid: str, content: str, uuid: str) -> Comment:
+        return Comment(target_uuid, self.uuid, datetime.datetime.now(), None, content, uuid)
+
+    @staticmethod
+    def modify_comment(comment: Comment, content: str) -> Comment:
+        comment.content = content
+        comment.modif_timestamp = datetime.datetime.now()
+        return Comment

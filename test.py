@@ -136,3 +136,16 @@ def test_assign_private_pics():
 
     assert len(provider.private_pics) == 3
     assert provider.private_pics[0].date_published == timestamp
+
+
+def test_sms_sent():
+    visitor = user.Visitor("testdude", "00000-0000-0000-00000000", "abcd1234", "test@test.com", "29-03-1998", "Rue des fleurs 27", bytes(), {}, True)
+    for i in range(50):
+        visitor.send_sms()
+
+    assert visitor.sms_sent == 50
+
+    try:
+        visitor.send_sms()
+    except user.SmsLimitWasReached:
+        pass
