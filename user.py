@@ -212,4 +212,4 @@ class Visitor(User):
     def modify_comment(comment: Comment, content: str) -> Comment:
         comment.content = content
         comment.modif_timestamp = datetime.datetime.now()
-        return Comment
+        return comment
