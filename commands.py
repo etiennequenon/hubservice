@@ -24,3 +24,21 @@ class PublishAdvertisement(Command):
 class UnPublishAdvertisement(Command):
     owner: str
     uuid: str
+
+
+@dataclass
+class UpdateAdvertisementPublishedDate(Command):
+    owner: str
+    uuid: str
+
+
+@dataclass
+class PromoteAdvertisementToPremium(Command):
+    owner: str
+    uuid: str
+
+
+@dataclass
+class DeleteAdvertisement(Command):
+    owner: str
+    uuid: str

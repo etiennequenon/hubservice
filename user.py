@@ -24,7 +24,7 @@ class User:
         self.password = password
         self.e_mail = e_mail
 
-    def report(self, target_uuid: str, content: str, uuid: str) -> Report: # To report a profile, an Ad, Provider, etc...
+    def report(self, target_uuid: str, content: str, uuid: str) -> Report:  # To report a profile, an Ad, Provider, etc...
         return Report(target_uuid, self.uuid, datetime.datetime.now(), content, 'NEW', uuid)
 
 
@@ -139,7 +139,7 @@ class Provider(User):
         return self._billing
 
     def get_ad(self, ad_uuid):
-        return next(a for a in self._ads if a.uuid == ad_uuid)
+        return next((a for a in self._ads if a.uuid == ad_uuid), None)
 
     def update_ad_location(self, ad_uuid: str, street: str, number: int, city: str, zip_code: int, state: str, country: str):
         ad = next(a for a in self._ads if a.uuid == ad_uuid)
@@ -155,6 +155,10 @@ class Provider(User):
         ad = next(a for a in self._ads if a.uuid == ad_uuid)
         ad.prices = prices
         return ad
+
+    def delete_ad(self, ad_uuid):
+        ad = next(a for a in self._ads if a.uuid == ad_uuid)
+        self._ads.remove(ad)
 
     def promote_ad_to_premium(self, ad_uuid):
         if self.vip:
