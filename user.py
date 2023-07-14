@@ -1,3 +1,7 @@
+"""
+    By Etienne Quenon
+"""
+
 import datetime
 from dataclasses import dataclass
 from typing import Set, List
@@ -184,7 +188,6 @@ class Comment:
     uuid: str
 
 
-
 class Visitor(User):
     def __init__(self, username: str, uuid: str, password: str, e_mail: str, birthday: datetime.date, address: str, profile_pic: bytes, preferences: dict, is_premium: bool):
         self.birthday = birthday
@@ -213,3 +216,14 @@ class Visitor(User):
         comment.content = content
         comment.modif_timestamp = datetime.datetime.now()
         return comment
+
+
+class Admin(User):
+    def __init__(self, username: str, uuid: str, password: str, e_mail: str):
+        super().__init__(username, uuid, password, e_mail)
+
+
+class Moderator(User):
+    def __init__(self, username: str, uuid: str, password: str, e_mail: str):
+        super().__init__(username, uuid, password, e_mail)
+

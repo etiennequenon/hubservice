@@ -1,6 +1,14 @@
+"""
+    By Etienne Quenon
+"""
+
 import user
 import time
 import datetime
+import database
+import handlers
+import worker
+import commands
 
 
 def test_publish_advertisement():
