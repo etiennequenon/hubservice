@@ -27,6 +27,17 @@ class User:
     def report(self, target_uuid: str, content: str, uuid: str) -> Report:  # To report a profile, an Ad, Provider, etc...
         return Report(target_uuid, self.uuid, datetime.datetime.now(), content, 'NEW', uuid)
 
+    def __repr__(self):
+        return f"<User {self.uuid}>"
+
+    def __eq__(self, other):
+        if not isinstance(self, User):
+            return False
+        return self.uuid == other.uuid
+
+    def __hash__(self):
+        return hash(self.uuid)
+
 
 @dataclass(frozen=True)
 class Location:
@@ -72,6 +83,9 @@ class AdvertisementAlreadyPromoted(Exception):
 
 class SmsLimitWasReached(Exception):
     """ You reached the daily 50 SMS limit ! """
+
+class CommentNofFound(Exception):
+    """ Couldn't find your comment ! """
 
 
 @dataclass(unsafe_hash=True)
@@ -182,7 +196,7 @@ class Provider(User):
         self._private_pics = pictures
 
 
-@dataclass(frozen=False)
+@dataclass(unsafe_hash=True)
 class Comment:
     target_uuid: str
     owner_uuid: str
@@ -193,13 +207,14 @@ class Comment:
 
 
 class Visitor(User):
-    def __init__(self, username: str, uuid: str, password: str, e_mail: str, birthday: datetime.date, address: str, profile_pic: bytes, preferences: dict, is_premium: bool):
+    def __init__(self, username: str, uuid: str, password: str, e_mail: str, birthday: datetime.date, address: str, profile_pic: bytes, preferences: dict, is_premium: bool, comments):
         self.birthday = birthday
         self.address = address
         self.profile_pic = profile_pic
         self.preferences = preferences
         self.is_premium = is_premium
         self._sms_sent = 0
+        self.comments = comments  # Type List[Comment]
         super().__init__(username, uuid, password, e_mail)
 
     def send_sms(self):
@@ -213,13 +228,23 @@ class Visitor(User):
         return self._sms_sent
 
     def add_comment(self, target_uuid: str, content: str, uuid: str) -> Comment:
-        return Comment(target_uuid, self.uuid, datetime.datetime.now(), None, content, uuid)
+        comment = Comment(target_uuid, self.uuid, datetime.datetime.now(), None, content, uuid)
+        self.comments.append(comment)
+        return comment
 
-    @staticmethod
-    def modify_comment(comment: Comment, content: str) -> Comment:
+    def modify_comment(self, uuid: str, content: str) -> Comment:
+        comment = next((c for c in self.comments if uuid == c.uuid), None)
+        if not comment:
+            raise CommentNofFound
         comment.content = content
         comment.modif_timestamp = datetime.datetime.now()
         return comment
+
+    def delete_comment(self, uuid: str):
+        comment = next((c for c in self.comments if uuid == c.uuid), None)
+        if not comment:
+            raise CommentNofFound
+        self.comments.remove(comment)
 
 
 class Admin(User):

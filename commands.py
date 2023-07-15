@@ -2,7 +2,6 @@
     By Etienne Quenon
 """
 from dataclasses import dataclass
-import datetime
 import user
 
 
@@ -42,3 +41,30 @@ class PromoteAdvertisementToPremium(Command):
 class DeleteAdvertisement(Command):
     owner: str
     uuid: str
+
+
+@dataclass
+class AddComment(Command):
+    target_uuid: str
+    owner: str
+    content: str
+
+
+@dataclass
+class ModifyComment(Command):
+    owner: str
+    uuid: str
+    content: str
+
+
+@dataclass
+class DeleteComment(Command):
+    owner: str
+    uuid: str
+
+
+@dataclass
+class SendSms(Command):
+    user_uuid: str
+    to: str
+    message: str

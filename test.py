@@ -5,10 +5,6 @@
 import user
 import time
 import datetime
-import database
-import handlers
-import worker
-import commands
 
 
 def test_publish_advertisement():
@@ -147,7 +143,7 @@ def test_assign_private_pics():
 
 
 def test_sms_sent():
-    visitor = user.Visitor("testdude", "00000-0000-0000-00000000", "abcd1234", "test@test.com", "29-03-1998", "Rue des fleurs 27", bytes(), {}, True)
+    visitor = user.Visitor("testdude", "00000-0000-0000-00000000", "abcd1234", "test@test.com", "29-03-1998", "Rue des fleurs 27", bytes(), {}, True, [])
     for i in range(50):
         visitor.send_sms()
 
