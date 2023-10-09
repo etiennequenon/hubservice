@@ -90,9 +90,9 @@ def test_update_ad_location():
 
 def test_update_ad_services():
     provider = user.Provider("testdude", "00000-0000-0000-00000000", None, None, list(), False, True, None)
-    ad = provider.publish_ad("TestAd", "This is a test Ad", {}, None, {"service1": "Je suce"}, "00000-0000-0000-00000001")
+    ad = provider.publish_ad("TestAd", "This is a test Ad", {}, None, {"service1": "Je suis"}, "00000-0000-0000-00000001")
 
-    assert ad.service["service1"] == "Je suce"
+    assert ad.service["service1"] == "Je suis"
 
     provider.update_ad_services("00000-0000-0000-00000001", {"service2": "Je prends"})
 
