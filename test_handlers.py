@@ -97,7 +97,7 @@ def test_promote_ad_to_premium():
     command = commands.PromoteAdvertisementToPremium(provider.uuid, ad.uuid)
     promoted_ad = handlers.promote_ad_to_premium(command, w)
 
-    assert type(promoted_ad) == user.PremiumAdvertisement
+    assert isinstance(promoted_ad, user.PremiumAdvertisement)
     assert w.commited
 
 

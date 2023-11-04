@@ -5,6 +5,7 @@
 import user
 import time
 import datetime
+import gc
 
 
 def test_publish_advertisement():
@@ -153,3 +154,110 @@ def test_sms_sent():
         visitor.send_sms()
     except user.SmsLimitWasReached:
         pass
+
+
+def test_report_user():
+    provider = user.Provider("testdudeprovider", "00000-0000-0000-00000000", None, None, list(), False, False, None)
+    visitor = user.Visitor("testdude", "00000-0000-0000-00000001", "abcd1234", "test@test.com", "29-03-1998", "Rue des fleurs 27", bytes(), {}, False, [])
+    report = visitor.report(provider, "This is fake", "00000-0000-0000-00000002")
+
+    assert report.status == "NEW"
+
+    moderator = user.Moderator("testdudemodo", "00000-0000-0000-00000001", "abcd1234", "test@test.com")
+    report2 = moderator.open_report(report, "00000-0000-0000-00000003")
+
+    assert report2.status == "PENDING"
+    assert report2.comment[0].target_uuid == report.uuid
+    assert report2.comment[0].owner_uuid == visitor.uuid
+    assert report2.comment[0].content == f"Moderator {moderator.username} has opened your ticket !"
+
+
+def test_add_comment_to_report():
+    provider = user.Provider("testdudeprovider", "00000-0000-0000-00000000", None, None, list(), False, False, None)
+    visitor = user.Visitor("testdude", "00000-0000-0000-00000020", "abcd1234", "test@test.com", "29-03-1998", "Rue des fleurs 27", bytes(), {}, False, [])
+    report = visitor.report(provider, "This is fake", "00000-0000-0000-00000010")
+    moderator = user.Moderator("testdudemodo2", "00000-0000-0000-00000001", "abcd1234", "test@test.com")
+
+    exception_occured = 0
+
+    try:
+        moderator.comment_report(report, "This should fail", "00000-0000-0000-00000003")
+    except user.ReportNotOpened:
+        exception_occured += 1
+    
+    assert exception_occured == 1
+    assert len(report.comment) == 0
+
+    moderator.open_report(report, "00000-0000-0000-00000017")
+    moderator.comment_report(report, "This should work", "00000-0000-0000-00000018")
+
+    assert report.comment[1].content == "This should work"
+
+
+def test_close_report():
+    provider = user.Provider("testdudeprovider", "00000-0000-0000-00000000", None, None, list(), False, False, None)
+    visitor = user.Visitor("testdude", "00000-0000-0000-00000001", "abcd1234", "test@test.com", "29-03-1998", "Rue des fleurs 27", bytes(), {}, False, [])
+    report = visitor.report(provider, "This is fake", "00000-0000-0000-00000002")
+    moderator = user.Moderator("testdudemodo2", "00000-0000-0000-00000001", "abcd1234", "test@test.com")
+
+    exception_occurred = 0
+
+    try:
+        moderator.close_report(report, "00000-0000-0000-00000003")
+    except user.ReportNotOpened:
+        exception_occurred += 1
+
+    assert exception_occurred == 1
+    assert len(report.comment) == 0
+
+    moderator.open_report(report, "00000-0000-0000-00000003")
+    moderator.close_report(report, "00000-0000-0000-00000004")
+
+    assert report.status == "CLOSED"
+    assert report.comment[1].content == f"Moderator {moderator.username} has closed your ticket !"
+
+
+def test_enable_disable_user():
+    provider = user.Provider("testdudeprovider", "00000-0000-0000-00000000", None, None, list(), False, False, None)
+    visitor = user.Visitor("testdude", "00000-0000-0000-00000001", "abcd1234", "test@test.com", "29-03-1998", "Rue des fleurs 27", bytes(), {}, False, [])
+    moderator = user.Moderator("testdudemodo2", "00000-0000-0000-00000001", "abcd1234", "test@test.com")
+    admin = user.Admin("testdudeadmin", "00000-0000-0000-00000001", "abcd1234", "test@test.com")
+
+    admin.disable_user(provider)
+    admin.disable_user(visitor)
+    admin.disable_user(moderator)
+
+    assert provider._active is False
+    assert visitor._active is False
+    assert moderator._active is False
+
+
+def test_protection_disabled_user():
+    provider = user.Provider("testdudeprovider", "00000-0000-0000-00000000", None, None, list(), False, False, None)
+    visitor = user.Visitor("testdude", "00000-0000-0000-00000001", "abcd1234", "test@test.com", "29-03-1998", "Rue des fleurs 27", bytes(), {}, False, [])
+    report = visitor.report(provider, "This is fake", "00000-0000-0000-00000002")
+    moderator = user.Moderator("testdudemodo2", "00000-0000-0000-00000001", "abcd1234", "test@test.com")
+    admin = user.Admin("testdudeadmin", "00000-0000-0000-00000001", "abcd1234", "test@test.com")
+
+    admin.disable_user(provider)
+    admin.disable_user(visitor)
+    admin.disable_user(moderator)
+
+    exception_occurred = 0
+
+    try:
+        provider.publish_ad("TestAd", "This is a test Ad", {"service1": 123}, None, None, "00000-0000-0000-00000000")
+    except user.UserNotActive:
+        exception_occurred += 1
+
+    try:
+        visitor.add_comment("00000-0000-0000-00000000", "test", "00000-0000-0000-00000001")
+    except user.UserNotActive:
+        exception_occurred += 1
+
+    try:
+        moderator.open_report(report, "00000-0000-0000-00000003")
+    except user.UserNotActive:
+        exception_occurred += 1
+
+    assert exception_occurred == 3
