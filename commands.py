@@ -1,7 +1,7 @@
 """
     By Etienne Quenon
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import user
 
 
@@ -68,3 +68,47 @@ class SendSms(Command):
     user_uuid: str
     to: str
     message: str
+
+
+@dataclass
+class Report(Command):
+    owner: str
+    target_uuid: str
+    content: str
+
+
+@dataclass
+class CommentReport(Command):
+    owner: str
+    target_uuid: str
+    content: str
+
+
+@dataclass
+class OpenReport(Command):
+    moderator_uuid: str
+    report_uuid: str
+
+
+@dataclass
+class CloseReport(Command):
+    moderator_uuid: str
+    report_uuid: str
+
+
+@dataclass
+class ActivateUser(Command):
+    admin_uuid: str
+    user_uuid: str
+
+
+@dataclass
+class DisableUser(Command):
+    admin_uuid: str
+    user_uuid: str
+
+
+@dataclass
+class SetPrivatePics(Command):
+    pictures: field(default_factory=list)  # List[bytes]
+    user_uuid: str

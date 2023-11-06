@@ -88,3 +88,69 @@ def send_sms_visitor(command: commands.SendSms, w: worker.AbstractWorker, notifi
         w.db.update(visitor)
         w.commit()
 
+
+def report(command: commands.Report, w: worker.AbstractWorker):
+    with w:
+        reporting_user: user.User = w.db.read(command.owner)
+        reports = reporting_user.report(command.target_uuid, command.content, str(uuid.uuid4()))
+        w.db.create(reports)
+        w.commit()
+    return reports
+
+
+def comment_report(command: commands.CommentReport, w: worker.AbstractWorker):
+    with w:
+        commenting_user: user.User = w.db.read(command.owner)
+        target_report: user.Report = w.db.read(command.target_uuid)
+        commenting_user.comment_report(target_report, command.content, str(uuid.uuid4()))
+        w.db.update(target_report)
+        w.commit()
+    return target_report
+
+
+def open_report(command: commands.OpenReport, w: worker.AbstractWorker):
+    with w:
+        moderator: user.Moderator = w.db.read(command.moderator_uuid)
+        target_report: user.Report = w.db.read(command.report_uuid)
+        moderator.open_report(target_report, str(uuid.uuid4()))
+        w.db.update(target_report)
+        w.commit()
+
+
+def close_report(command: commands.CloseReport, w: worker.AbstractWorker):
+    with w:
+        moderator: user.Moderator = w.db.read(command.moderator_uuid)
+        target_report: user.Report = w.db.read(command.report_uuid)
+        moderator.close_report(target_report, str(uuid.uuid4()))
+        w.db.update(target_report)
+        w.commit()
+
+
+def activate_user(command: commands.ActivateUser, w: worker.AbstractWorker):
+    with w:
+        admin: user.Admin = w.db.read(command.admin_uuid)
+        target_user = w.db.read(command.user_uuid)
+        admin.activate_user(target_user)
+        w.db.update(target_user)
+        w.commit()
+
+
+def disable_user(command: commands.ActivateUser, w: worker.AbstractWorker):
+    with w:
+        admin: user.Admin = w.db.read(command.admin_uuid)
+        target_user = w.db.read(command.user_uuid)
+        admin.disable_user(target_user)
+        w.db.update(target_user)
+        w.commit()
+
+
+def set_private_pics(command: commands.SetPrivatePics, w: worker.AbstractWorker):
+    with w:
+        provider: user.Provider = w.db.read(command.user_uuid)
+        provider.private_pics(command.pictures)
+        w.db.update(provider)
+        w.commit()
+
+
+def update_billing():
+    pass
