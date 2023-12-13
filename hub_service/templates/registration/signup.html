@@ -1,0 +1,15 @@
+{% extends "e_teaching/base.html" %}
+    {% block content %}
+        {% if error %}
+            <script type="text/javascript">
+                alert("{{ error }}");
+            </script>
+        {% endif %}
+        <h2>Sign up</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Sign Up</button>
+        </form>
+    {% endblock %}
+{% endblock %}

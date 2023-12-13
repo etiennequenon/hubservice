@@ -3,6 +3,7 @@
 """
 from dataclasses import dataclass, field
 import user
+import datetime
 
 
 class Command:
@@ -112,3 +113,12 @@ class DisableUser(Command):
 class SetPrivatePics(Command):
     pictures: field(default_factory=list)  # List[bytes]
     user_uuid: str
+
+
+@dataclass
+class UpdateBilling(Command):
+    user_uuid: str
+    card_number: str
+    expiry_date: datetime.date
+    secret_code: str
+    fullname: str

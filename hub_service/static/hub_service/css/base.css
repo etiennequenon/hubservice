@@ -1,0 +1,88 @@
+body {
+    color: white;
+    background-color: #434343;
+    text-align: center;
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+.center-div {
+    display: inline-block;
+    text-align: center;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    background-color: #696969;
+    color: white;
+}
+
+#welcome {
+    text-align: center;
+}
+
+#date_selector {
+    text-align: center;
+}
+
+login {
+    border: 1px solid #333;
+}
+
+thead,
+tfoot {
+    background-color: #333;
+    color: #fff;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* bottom-nav */
+.bottom-nav  {
+    background-color: #333;
+    overflow: hidden;
+}
+
+.bottom-nav a {
+  float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.bottom-nav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.bottom-nav a.active {
+    background-color: #696969;
+    color: white;
+}

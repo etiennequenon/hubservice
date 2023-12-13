@@ -1,0 +1,56 @@
+.vitrine-wrapper {
+    position: relative;
+}
+
+.vitrine {
+    display: flex;
+    overflow: hidden;
+    scroll-behavior: smooth;
+}
+
+.item {
+    flex: 0 0 auto;
+    margin-right: 10px;
+    /* Ajoutez des styles supplémentaires pour l'affichage et les marges */
+}
+
+.item img {
+    max-width: 100%;
+    height: auto;
+    /* Styles pour les images */
+}
+
+button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* Styles pour les boutons */
+}
+
+#prevBtn {
+    left: 10px;
+}
+
+#nextBtn {
+    right: 10px;
+}
+
+/* advertisement */
+
+.advertisement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Crée 4 colonnes si l'espace le permet */
+    gap: 20px; /* Espace entre les éléments */
+    padding: 20px; /* Espacement autour de la grille */
+}
+
+.advertisement {
+    border: 1px solid #ccc; /* Bordure pour chaque annonce */
+    padding: 10px;
+    text-align: center; /* Centrer le contenu */
+}
+
+.advertisement img {
+    max-width: 100%;
+    height: auto;
+}

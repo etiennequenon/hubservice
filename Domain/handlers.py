@@ -152,5 +152,9 @@ def set_private_pics(command: commands.SetPrivatePics, w: worker.AbstractWorker)
         w.commit()
 
 
-def update_billing():
-    pass
+def update_billing(command: commands.UpdateBilling, w: worker.AbstractWorker):
+    with w:
+        provider: user.Provider = w.db.read(command.user_uuid)
+        provider.update_billing(command.card_number, command.expiry_date, command.secret_code, command.fullname)
+        w.db.update(provider)
+        w.commit()
