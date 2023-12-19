@@ -1,0 +1,22 @@
+{% extends "hub_service/base.html" %}
+{% block css %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'hub_service/css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <img src="{% static 'path_to_profile_picture' %}" alt="Profile Picture" class="profile-picture">
+        <h2>{{ user.username }}</h2>
+        <p>{{ user.email }}</p>
+    </div>
+    <div class="profile-body">
+        <h3>About Me</h3>
+        <p>{{ user.profile.bio }}</p>
+    </div>
+    <button id="edit-profile">Edit Profile</button>
+</div>
+
+<script src="{% static 'hub_service/js/profile.js' %}"></script>
+{% endblock %}

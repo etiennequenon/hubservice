@@ -1,15 +1,21 @@
-{% extends "e_teaching/base.html" %}
-    {% block content %}
-        {% if error %}
-            <script type="text/javascript">
-                alert("{{ error }}");
-            </script>
-        {% endif %}
-        <h2>Sign up</h2>
+{% extends "hub_service/base.html" %}
+{% block css %}
+{% load static %}
+    <link rel="stylesheet" href="{% static 'registration/css/signup.css' %}">
+{% endblock %}
+{% block content %}
+    {% if error %}
+        <script type="text/javascript">
+            alert("{{ error }}");
+        </script>
+    {% endif %}
+    <h2 style="text-align: center;">Sign up</h2>
+    <div class="center-div">
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Sign Up</button>
         </form>
-    {% endblock %}
+    </div>
+
 {% endblock %}

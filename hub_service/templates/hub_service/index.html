@@ -3,21 +3,23 @@
 {% load static %}
     <link rel="stylesheet" href="{% static 'hub_service/css/index.css' %}">
 {% endblock %}
-{% block body_content %}
-    <div class="vitrine-wrapper">
+{% block content %}
+    <div class="center">
         <div id="welcome">
             <h1>Welcome to my page</h1>
-
             <p>
                 In here, great things will happen !
             </p>
         </div>
-
+    </div>
+    <div class="vitrine-wrapper">
         <div class="vitrine">
             {% for i in '0123456789'|make_list %}
                 <div class="item">
-                    <img src="{% static 'hub_service/css/images/image1.jpg' %}" alt="Image">
-                    <p>Advertisment {{ forloop.counter }}</p>
+                    <a href="{% url 'advertisement' %}">
+                        <img src="{% static 'hub_service/css/images/image1.jpg' %}" alt="Image" class="center">
+                    </a>
+                    <p>Advertisement {{ forloop.counter }}</p>
                 </div>
             {% endfor %}
         </div>
@@ -27,12 +29,15 @@
     <script src="{% static 'hub_service/js/index.js' %}"></script>
 
     <div class="advertisement-grid">
-        {% for i in '000000000000000000000'|make_list %}
-            <div class="advertisement">
-                <img src="{% static 'hub_service/css/images/image1.jpg' %}" alt="Photo 1">
-                <h3>Titre {{ forloop.counter }}</h3>
-                <p>Description de l'annonce {{ forloop.counter }}</p>
-            </div>
+        {% for i in '00000000000000000000'|make_list %}
+
+            <a href="{% url 'advertisement' %}">
+                <div class="advertisement">
+                    <img src="{% static 'hub_service/css/images/image1.jpg' %}" alt="Photo 1">
+                    <h3>Titre {{ forloop.counter }}</h3>
+                    <p>Description de l'annonce {{ forloop.counter }}</p>
+                </div>
+            </a>
         {% endfor %}
     </div>
 

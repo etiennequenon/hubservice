@@ -1,4 +1,4 @@
-{% extends "e_teaching/base.html" %}
+{% extends "hub_service/base.html" %}
 
 {% block content %}
 <div id="registration">
@@ -15,23 +15,25 @@
         {% endif %}
     {% endif %}
     <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table id="login" class="center">
-    <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-    </tr>
-    <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-    </tr>
-    </table>
+        {% csrf_token %}
+        <table id="login" class="center">
+        <tr>
+            <td>{{ form.username.label_tag }}</td>
+            <td>{{ form.username }}</td>
+        </tr>
+        <tr>
+            <td>{{ form.password.label_tag }}</td>
+            <td>{{ form.password }}</td>
+        </tr>
+        </table>
 
-    <input type="submit" value="login">
-    <input type="hidden" name="next" value="{{ next }}">
+        <p style="text-align: center;">
+            <input type="submit" value="Login">
+        </p>
+        <input type="hidden" name="next" value="{{ next }}">
     </form>
 
     {# Assumes you set up the password_reset view in your URLconf #}
-    <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+    <p style="text-align: center;"><a href="{% url 'password_reset' %}">Lost password?</a></p>
 </div>
 {% endblock %}

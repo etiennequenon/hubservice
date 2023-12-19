@@ -1,5 +1,6 @@
 .vitrine-wrapper {
     position: relative;
+    width: 90%;
 }
 
 .vitrine {
@@ -10,13 +11,13 @@
 
 .item {
     flex: 0 0 auto;
-    margin-right: 10px;
+    margin-right: 5px;
     /* Ajoutez des styles supplémentaires pour l'affichage et les marges */
 }
 
 .item img {
-    max-width: 100%;
-    height: auto;
+    max-width: 50%;
+    height: 50%;
     /* Styles pour les images */
 }
 
